@@ -1,3 +1,4 @@
+const cors = require('cors');
 const express = require('express');
 const server = express();
 const cron = require('node-cron');
@@ -18,7 +19,14 @@ function secureProtocol(req, res, next) {
     };
 };
 
+// Only permit GET requests and only from CrossPointe's website.
+const secureOptions = {
+    origin: 'https://cpnorman.thechurchco.com/',
+    methods: 'GET'
+};
+
 server.use(express.json());
+server.use(cors(secureOptions));
 server.use(secureProtocol);
 server.use('/api', require('./api'));
 
@@ -45,11 +53,12 @@ server.listen(SERVER_PORT, async () => {
 
 /*
 TO-DO:
-    3. npm i cors & then use cors headers to give requests from crosspointe website permission
     4. In cron.schedule() in server's index.js finish sending all retrieved data from PCO API to crosspointe_db
     5. In db/groups.js finish writing the insert() query for updating data in crosspointe_db
     6. write any necessary production scripts in package.json
     7. write any necessary development scripts in package.json
     8. write rate limit code in to the API to avoid ddos attacks from the website's URL
     9. write any other security features in for the API after consulting with any relevant sources on security about my specific situation
+    10. introduce rate limits on the requests from whatever ip to my server's api
+    11. restrict requests to specific endpoints
 */
