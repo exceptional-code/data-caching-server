@@ -17,21 +17,35 @@ async function get() {
    };
 };
 
-async function insert() {
+async function insert(group) {
     /*
-        Inserts groups data into CrossPointe's database if no
-        matching rows. If rows exist already, it updates the
-        existing data.
+        Inserts a group object or, conversely, updates an existing group object
+        in CrossPointe's database.
     */
+    const id = group.id;
+    const name = group.attributes.name;
+    const description = group.attributes.description;
+    const schedule = group.attributes.schedule
+    const email = group.attributes.contact_email;
+    const numMembers = group.attributes.memberships_count;
+    const virtualLocation = group.attributes.virtual_location_url
+    const type = group.relationships.group_type.data.type
+
     try {
         const { rows } = await client.query(`
-            INSERT INTO groups (col1, col2)
-            VALUES (val1, val2)
-            ON CONFLICT (unique_key_column)
-            DO UPDATE SET
-                col1 = EXCLUDED.col1
-                col2 = EXCLUDED.col2;
-        `);
+            INSERT INTO groups (id, name, description, schedule, email, num_members, virtual_location, type)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+            ON CONFLICT (id)
+            DO UPDATE groups SET
+                name = $2
+                description = $3
+                schedule = $4
+                email = $5
+                num_members = $6
+                virtual_location = $7
+                type = $8
+            WHERE id = $1;
+        `, [id, name, description, schedule, email, numMembers, virtualLocation, type]);
 
         return rows;
     } catch (error) {
