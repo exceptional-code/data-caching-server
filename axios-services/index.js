@@ -30,7 +30,7 @@ const getPCGroups = async () => {
             }
         });
 
-        return response;
+        return response.data;
     } catch (error) {
         // propagate error up to index.js
         throw error;
