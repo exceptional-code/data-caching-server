@@ -91,9 +91,6 @@ server.listen(SERVER_PORT, async () => {
 /*
 TO-DO:
     6. write any necessary production scripts in package.json
-    7. write any necessary development scripts in package.json
-    9. write any other security features in for the API after consulting with any relevant sources on security about my specific situation
-    12. write a script/module init_db that creates the tables of the database
     13. might need to write input validation for .post() requests if in the future handling
         input from forms
-    */
+*/
