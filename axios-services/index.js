@@ -1,36 +1,39 @@
 const axios = require('axios');
-const CROSSPOINTE_URL = process.env.CP_URL || 'http://localhost:4000/api';
-const PLANNING_CENTER_URL = process.env.PCO_URL || 'https://api.planningcenteronline.com';
-const PERSONAL_ACCESS_TOKEN = process.env.PERSONAL_ACCESS_TOKEN;
+const DATA_CACHING_SERVER_URL = process.env.SERVER_URL || 'http://localhost:4000/api';
+const API_URL = process.env.API_URL || 'https://api.planningcenteronline.com';
+const APP_ID = process.env.APP_ID;
+const SECRET = process.env.SECRET;
 
 const getCPGroups = async () => {
     /*
-        Called by the CrossPointe website's script every time
+        Called by the script on the church's website every time
         the client views the relevant groups information.
     */
     try {
-        const response = await axios.get(CROSSPOINTE_URL + '/groups');
+        const response = await axios.get(DATA_CACHING_SERVER_URL + '/groups');
 
         return response;
     } catch (error) {
         // log error to client
-        console.error('Unable to get groups from CrossPointe database:', error);
+        console.error(`Unable to get groups from the church's database:`, error);
     };
 };
 
 const getPCGroups = async () => {
     /*
-        Called by the server periodically to request groups data from
-        the Planning Center Online API and return it to be manipulated.
+        Called by the church's data caching server periodically to request
+        groups data from the hosting service's API and return it to be
+        manipulated.
     */
     try {
-        const response = await axios.get(PLANNING_CENTER_URL + '/groups/v2/groups', {
-            headers: {
-                'Authorization': `Bearer ${PERSONAL_ACCESS_TOKEN}`
+        const response = await axios.get(API_URL + '/groups/v2/groups', {
+            auth: {
+                username: `${APP_ID}`,
+                password: `${SECRET}`
             }
         });
 
-        return response.data;
+        return response.data.data;
     } catch (error) {
         // propagate error up to index.js
         throw error;
