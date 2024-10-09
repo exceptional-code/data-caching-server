@@ -2,6 +2,7 @@ const client = require('./client');
 
 async function dropTables() {
     console.log('Beginning to drop tables...');
+
     try {
         await client.query(`
             DROP TABLE IF EXISTS groups;
@@ -9,8 +10,9 @@ async function dropTables() {
 
         console.log('Finished dropping tables.');
     } catch (error) {
-        // Rethrow the error to be caught in the client then/catch block
+        // Rethrow the error to be caught in the server's promise chain.
         console.log('Error dropping tables.');
+
         throw error;
     };
 };
@@ -34,8 +36,9 @@ async function buildTables() {
 
         console.log('Finished building tables.');
     } catch (error) {
-        // Rethrow the error to be caught in the client then/catch block
+        // Rethrow the error to be caught in the server's promise chain.
         console.log('Error building tables.');
+        
         throw error;
     };
 };
