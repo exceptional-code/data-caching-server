@@ -30,7 +30,7 @@ function secureProtocol(req, res, next) {
     };
 };
 
-// Only permit GET requests and only from CrossPointe's website.
+// Only permit GET requests and only from the church's website.
 const secureOptions = {
     origin: 'https://cpnorman.thechurchco.com/',
     methods: 'GET'
@@ -49,7 +49,20 @@ server.use(secureProtocol);
 server.use(rateLimiter);
 server.use('/api', require('./api'));
 
-cron.schedule('0 0 * * *', async () => {
+server.listen(SERVER_PORT, async () => {
+    console.log(`Server is running on PORT: ${SERVER_PORT}`);
+
+    try {
+        await client.connect();
+        console.log('Connected to database!');
+    } catch (error) {
+        console.error('Database is down!\n', error);
+    };
+});
+
+// cron.schedule('0 0 * * *', async () => {
+// test line:
+cron.schedule('* * * * *', async () => {
     /*
         Fetches groups data from a third party database at the beginning of every day
         and inserts that data into our local database. Handles data insertion and
@@ -77,16 +90,6 @@ cron.schedule('0 0 * * *', async () => {
     };
 });
 
-server.listen(SERVER_PORT, async () => {
-    console.log(`Server is running on PORT: ${SERVER_PORT}`);
-
-    try {
-        await client.connect();
-        console.log('Connected to database!');
-    } catch (error) {
-        console.error('Database is down!\n', error);
-    };
-});
 
 /*
 TO-DO:

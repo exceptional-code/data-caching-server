@@ -6,6 +6,7 @@
   "scripts": {
     "server:start": "node index.js",
     "db:build": "node ./db/init_db.js",
+    "build": "npm install && npm run db:build",
     "server:test": "npm run db:build && npm run server:start"
   },
   "keywords": [],
