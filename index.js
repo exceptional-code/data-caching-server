@@ -1,6 +1,4 @@
 const cors = require('cors');
-const express = require('express');
-const server = express();
 const cron = require('node-cron');
 const rateLimit = require('express-rate-limit');
 require('dotenv').config();
@@ -12,6 +10,10 @@ const {
 const {
     Groups
 } = require('./db');
+const express = require('express');
+const server = express();
+
+server.set('trust proxy', true);
 
 function secureProtocol(req, res, next) {
     /*
@@ -32,7 +34,7 @@ function secureProtocol(req, res, next) {
 
 // Only permit GET requests and only from the church's website.
 const secureOptions = {
-    origin: 'https://cpnorman.thechurchco.com/',
+    origin: 'https://www.crosspointe.tv/',
     methods: 'GET'
 };
 
