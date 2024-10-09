@@ -60,9 +60,7 @@ server.listen(SERVER_PORT, async () => {
     };
 });
 
-// cron.schedule('0 0 * * *', async () => {
-// test line:
-cron.schedule('* * * * *', async () => {
+cron.schedule('0 0 * * *', async () => {
     /*
         Fetches groups data from a third party database at the beginning of every day
         and inserts that data into our local database. Handles data insertion and
