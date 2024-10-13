@@ -34,7 +34,7 @@ function secureProtocol(req, res, next) {
 
 // Only permit GET requests and only from the church's website.
 const secureOptions = {
-    origin: 'https://www.crosspointe.tv/',
+    origin: 'https://www.crosspointe.tv',
     methods: 'GET'
 };
 
@@ -46,8 +46,8 @@ const rateLimiter = rateLimit({
 });
 
 server.use(express.json());
-server.use(cors(secureOptions));
 server.use(secureProtocol);
+server.use(cors(secureOptions));
 server.use(rateLimiter);
 server.use('/api', require('./api'));
 
