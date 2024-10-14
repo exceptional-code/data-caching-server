@@ -65,12 +65,18 @@ server.listen(SERVER_PORT, async () => {
 cron.schedule('0 0 * * *', async () => {
     /*
         Fetches groups data from a third party database at the beginning of every day
-        and inserts that data into our local database. Handles data insertion and
-        data retrieval errors if any responses return with rejections.
+        and inserts that data into our local database. Handles data insertion, data
+        refresh, and data retrieval errors if any responses return with rejections.
     */
     try {
         const groups = await getPCGroups();
         let message = '';
+
+        try {
+            await Groups.refresh();
+        } catch (error) {
+            throw Error('DataRefreshError:\n', error);
+        };
 
         for (const group of groups) {
             try {
@@ -80,12 +86,12 @@ cron.schedule('0 0 * * *', async () => {
             };
         };
 
-        if (message !== '') throw Error('DataInsertionError:', message);
+        if (message !== '') throw Error('DataInsertionError:\n', message);
     } catch (error) {
-        if (error.name === 'DataInsertionError') {
+        if (error.name === 'DataInsertionError' || error.name === 'DataRefreshError') {
             console.error(error);
         } else {
-            console.error('DataRetrievalError:', error);
+            console.error('DataRetrievalError:\n', error);
         };
     };
 });
@@ -93,7 +99,6 @@ cron.schedule('0 0 * * *', async () => {
 
 /*
 TO-DO:
-    6. write any necessary production scripts in package.json
     13. might need to write input validation for .post() requests if in the future handling
         input from forms
 */
