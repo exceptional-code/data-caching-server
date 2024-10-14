@@ -4,17 +4,32 @@ async function get() {
     /*
         Retrieves all groups from the church's database.
     */
-   try {
+    try {
         const { rows } = await client.query(`
             SELECT *
             FROM groups;
         `);
 
         return rows;
-   } catch (error) {
+    } catch (error) {
         // Propagate error up to api/groups.js.
         throw error;
-   };
+    };
+};
+
+async function refresh() {
+    /*
+        Resets the data in the database so that old irrelevant data doesn't
+        persist.
+    */
+    try {
+        await client.query(`
+            TRUNCATE TABLE groups;
+        `);
+    } catch (error) {
+        // Propagate error up to api/groups.js.
+        throw error;
+    };
 };
 
 async function insert(group) {
@@ -32,7 +47,7 @@ async function insert(group) {
     const type = group.relationships.group_type.data.type;
 
     try {
-        const { rows } = await client.query(`
+        await client.query(`
             INSERT INTO groups (id, name, description, schedule, email, num_members, virtual_location, type)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
             ON CONFLICT (id)
@@ -45,8 +60,6 @@ async function insert(group) {
                 virtual_location = $7,
                 type = $8;
         `, [id, name, description, schedule, email, numMembers, virtualLocation, type]);
-
-        return rows;
     } catch (error) {
         // Propagate error up to api/groups.js.
         throw error;
@@ -55,5 +68,6 @@ async function insert(group) {
 
 module.exports = {
     get,
+    refresh,
     insert
 };
