@@ -38,7 +38,7 @@ const secureOptions = {
     methods: 'GET'
 };
 
-// Define a rate limiter to limit request to 33 per 5 minutes from the same IP.
+// Define a rate limiter to limit requests to 33 per 5 minutes from the same IP.
 const rateLimiter = rateLimit({
     windowMs: 5 * 60 * 1000,
     max: 33,
