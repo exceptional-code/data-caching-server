@@ -47,4 +47,4 @@ client.connect()
     .then(dropTables)
     .then(buildTables)
     .catch(console.error)
-    .finally(() => client.end());
+    .finally(() => client.close());
